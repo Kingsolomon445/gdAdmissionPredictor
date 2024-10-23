@@ -49,8 +49,11 @@ def create_model():
 model = create_model()
 optimizer = Adam(learning_rate=0.01)
 model.compile(loss='mse', metrics=['mae'], optimizer=optimizer)
+early_stopping = EarlyStopping(monitor='val_loss', patience=3, mode='min', restore_best_weights=True)
 
-history = model.fit(features_train, labels_train, validation_split=0.1, epochs=40, batch_size=2, verbose=0)
+
+history = model.fit(features_train, labels_train, validation_split=0.30, epochs=10, batch_size=20, callbacks=[early_stopping], verbose=0)
+# history = model.fit(features_train, labels_train, validation_split=0.2, epochs=40, batch_size=2, verbose=0)
 
 res_mse, res_mae = model.evaluate(features_test, labels_test, verbose=0)
 print(f"mse: {res_mse}\nmae: {res_mae}")
