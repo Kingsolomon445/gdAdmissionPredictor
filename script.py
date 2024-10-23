@@ -50,9 +50,36 @@ model = create_model()
 optimizer = Adam(learning_rate=0.01)
 model.compile(loss='mse', metrics=['mae'], optimizer=optimizer)
 
-model.fit(features_train, labels_train, epochs=40, batch_size=2, verbose=1)
+history = model.fit(features_train, labels_train, validation_split=0.1, epochs=40, batch_size=2, verbose=0)
 
 res_mse, res_mae = model.evaluate(features_test, labels_test, verbose=0)
+print(f"mse: {res_mse}\nmae: {res_mae}")
+
+fig = plt.figure()
+
+# Subplot for loss
+plt.subplot(2, 1, 1)
+plt.plot(history.history["loss"])
+plt.plot(history.history["val_loss"])
+plt.title("Model Loss")
+plt.ylabel("Loss")
+plt.xlabel("Epoch")
+plt.legend(['Train', 'Val'], loc='upper left')
+
+# Subplot for MAE
+plt.subplot(2, 1, 2)
+plt.plot(history.history["mae"])
+plt.plot(history.history["val_mae"])
+plt.title("Mean Average Error")
+plt.ylabel("MAE")
+plt.xlabel("Epoch")
+plt.legend(['Train', 'Val'], loc='upper left')
+
+plt.tight_layout()
+# fig.savefig('static/images/my_plots.png')
+plt.show()
+
+
 
 
 # print(model.summary()) 
@@ -61,4 +88,5 @@ res_mse, res_mae = model.evaluate(features_test, labels_test, verbose=0)
 # print(features_test)
 # print(labels_train)
 # print(labels_test)
-print(f"mse: {res_mse}\nmae: {res_mae}")
+# print(history.history)
+
