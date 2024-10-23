@@ -46,18 +46,26 @@ def create_model():
     model.add(output)
     return model
 
+
 model = create_model()
 optimizer = Adam(learning_rate=0.01)
 model.compile(loss='mse', metrics=['mae'], optimizer=optimizer)
-early_stopping = EarlyStopping(monitor='val_loss', patience=3, mode='min', restore_best_weights=True)
+early_stopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', restore_best_weights=True)
 
 
-history = model.fit(features_train, labels_train, validation_split=0.30, epochs=10, batch_size=20, callbacks=[early_stopping], verbose=0)
+history = model.fit(features_train, labels_train, validation_split=0.20, epochs=15, batch_size=10, callbacks=[early_stopping], verbose=0)
 # history = model.fit(features_train, labels_train, validation_split=0.2, epochs=40, batch_size=2, verbose=0)
 
 res_mse, res_mae = model.evaluate(features_test, labels_test, verbose=0)
-print(f"mse: {res_mse}\nmae: {res_mae}")
+pred_values = model.predict(features_test)
+# pred_values = pred_values.flatten()
+r2 = r2_score(labels_test, pred_values)
 
+print(f"MSE: {res_mse}\MAE: {res_mae}")
+print(f"R Squared Value: {r2}")
+
+
+# Create plot
 fig = plt.figure()
 
 # Subplot for loss
@@ -77,9 +85,8 @@ plt.title("Mean Average Error")
 plt.ylabel("MAE")
 plt.xlabel("Epoch")
 plt.legend(['Train', 'Val'], loc='upper left')
-
-plt.tight_layout()
-# fig.savefig('static/images/my_plots.png')
+ 
+plt.tight_layout() # prevents plots from overlapping each other 
 plt.show()
 
 
