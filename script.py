@@ -100,7 +100,7 @@ def create_plot(history):
 def evaluate_model():
     model = create_model()
     best_params = do_grid_search()
-    early_stopping = EarlyStopping(monitor='val_loss', patience=10, mode='min', restore_best_weights=True)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=3, mode='min', restore_best_weights=True)
     history = model.fit(features_train, labels_train, validation_split=0.20, epochs=best_params['epochs'], batch_size=best_params['batch_size'], callbacks=[early_stopping], verbose=0)
     res_mse, res_mae = model.evaluate(features_test, labels_test, verbose=0)
     print(f"MSE: {res_mse}\nMAE: {res_mae}")
